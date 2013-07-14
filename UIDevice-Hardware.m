@@ -136,7 +136,8 @@
     if ([platform isEqualToString:@"iPhone1,2"])    return UIDevice3GiPhone;
     if ([platform hasPrefix:@"iPhone2"])            return UIDevice3GSiPhone;
     if ([platform hasPrefix:@"iPhone3"])            return UIDevice4iPhone;
-    if ([platform hasPrefix:@"iPhone4"])            return UIDevice5iPhone;
+    if ([platform hasPrefix:@"iPhone4"])            return UIDevice4SiPhone;
+    if ([platform hasPrefix:@"iPhone5"])            return UIDevice5iPhone;
     
     // iPod
     if ([platform hasPrefix:@"iPod1"])             return UIDevice1GiPod;
@@ -174,6 +175,7 @@
         case UIDevice3GiPhone: return IPHONE_3G_NAMESTRING;
         case UIDevice3GSiPhone: return IPHONE_3GS_NAMESTRING;
         case UIDevice4iPhone: return IPHONE_4_NAMESTRING;
+        case UIDevice4SiPhone: return IPHONE_4S_NAMESTRING;
         case UIDevice5iPhone: return IPHONE_5_NAMESTRING;
         case UIDeviceUnknowniPhone: return IPHONE_UNKNOWN_NAMESTRING;
         
