@@ -6,9 +6,6 @@ Pod::Spec.new do |s|
   s.homepage      = 'https://github.com/erica/uidevice-extension'
   s.author        = 'erica'
   s.source        = { :git  => 'https://github.com/pilot34/uidevice-extension' }
-  s.resource      = 'Classes/ShareKit/ShareKit.bundle', 'Classes/ShareKit/Core/SHKSharers.plist'
-  f  = FileList['Classes/ShareKit/Configuration/**/*.{h,m,c}','Classes/ShareKit/Core/**/*.{h,m,c}','Classes/ShareKit/Customize UI/**/*.{h,m,c}','Classes/ShareKit/UI/**/*.{h,m,c}', 'Classes/ShareKit/Sharers/Actions/**/*.{h,m,c}']
-  f = f.dup.exclude(/GTMNSString/)
   s.source_files = ""
 
   s.subspec 'Hardware' do |hard|
