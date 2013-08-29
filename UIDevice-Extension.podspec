@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name          = 'UIDevice-Extension'
-  s.version       = '0.0.1'
+  s.version       = '0.0.2'
   s.platform      = :ios
   s.summary       = 'UIDevice categories to determine device model'
   s.homepage      = 'https://github.com/erica/uidevice-extension'
