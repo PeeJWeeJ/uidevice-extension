@@ -11,6 +11,9 @@ Pod::Spec.new do |s|
   s.subspec 'Hardware' do |hard|
     hard.source_files  = 'UIDevice-Hardware.{h,m}'
   end
+  s.subspec 'wwanconnect' do |wwan|
+    wwan.source_files  = 'wanconnect.{h,m}'
+  end
   s.subspec 'Reachability' do |reach|
     reach.source_files  = 'UIDevice-Reachability.{h,m}'
   end
