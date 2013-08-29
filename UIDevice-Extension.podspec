@@ -6,13 +6,10 @@ Pod::Spec.new do |s|
   s.homepage      = 'https://github.com/erica/uidevice-extension'
   s.author        = 'erica'
   s.source        = { :git  => 'https://github.com/jnstq/uidevice-extension' }
-  s.source_files = ""
+  s.source_files  = "wanconnect.{h,c}"
 
   s.subspec 'Hardware' do |hard|
     hard.source_files  = 'UIDevice-Hardware.{h,m}'
-  end
-  s.subspec 'wwanconnect' do |wwan|
-    wwan.source_files  = 'wanconnect.{h,c}'
   end
   s.subspec 'Reachability' do |reach|
     reach.source_files  = 'UIDevice-Reachability.{h,m}'
