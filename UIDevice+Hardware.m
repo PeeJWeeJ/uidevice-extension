@@ -7,7 +7,7 @@
 // Thanks to Emanuele Vulcano, Kevin Ballard/Eridius, Ryandjohnson, Matt Brown, etc.
 
 /********************************************************
- Drastic changes made by PeeJWeeJ, but thanks to all the contributers listed above and below
+ Drastic changes made by Paul Fechner Jr.  Thanks to all the other contributors
  *********************************************************/
 
 #include <sys/socket.h> // Per msqr
@@ -15,7 +15,7 @@
 #include <net/if.h>
 #include <net/if_dl.h>
 
-#import "UIDevice-Hardware.h"
+#import "UIDevice+Hardware.h"
 
 /********************************************************
 	Strings returned by the system
@@ -31,9 +31,10 @@
 #define IPHONE_4S_SYS_STRING            @"iPhone4"
 #define IPHONE_5GSM_SYS_STRING			@"iPhone5,1"
 #define IPHONE_5CDMA_SYS_STRING			@"iPhone5,2"
-#define IPHONE_5S_SYS_STRING            @"iPhone??"
-#define IPHONE_5C_SYS_STRING            @"iPhone??"
-
+#define IPHONE_5C_USTEC_SYS_STRING            @"iPhone5,3"
+#define IPHONE_5C_FRNTEC_SYS_STRING            @"iPhone5,4"
+#define IPHONE_5S_USTEC_SYS_STRING            @"iPhone6,1"
+#define IPHONE_5S_FRNTEC_SYS_STRING            @"iPhone6,2"
 
 #define IPOD_PREFIX_SYS_STRING			@"iPod"
 #define IPOD_1G_SYS_STRING				@"iPod1"
@@ -66,7 +67,7 @@
 
 
 /********************************************************
- Strings [UIDevice platformString] will return
+ Strings [UIDevice platformString] will return one of these
  *********************************************************/
 
 #define IFPGA_NAMESTRING                @"iFPGA"
@@ -107,45 +108,39 @@
 #define SIMULATOR_IPAD_NAMESTRING       @"iPad Simulator"
 #define SIMULATOR_APPLETV_NAMESTRING    @"Apple TV Simulator"
 
-// rather than a huge if block or switch statement, I changed it to a dictinary with all the possible values. this doesn't look pretty, but it's a lot simpler to look at in the code
-// as it's a dictionary, it doesn't matter where a new device is added, so in future just make sure it's documented in the comments below
-#define STRINGS_DICTIONARY @{IFPGA_SYS_STRING: IFPGA_NAMESTRING,IPHONE_1_SYS_STRING: IPHONE_1G_NAMESTRING,IPHONE_3G_SYS_STRING: IPHONE_3G_NAMESTRING,IPHONE_3GS_SYS_STRING: IPHONE_3GS_NAMESTRING,IPHONE_4GSM_SYS_STRING: IPHONE_4_NAMESTRING,IPHONE_4CDMA_SYS_STRING: IPHONE_4_NAMESTRING,IPHONE_4S_SYS_STRING: IPHONE_4S_NAMESTRING,IPHONE_5GSM_SYS_STRING: IPHONE_5_NAMESTRING,IPHONE_5CDMA_SYS_STRING: IPHONE_5_NAMESTRING,IPHONE_5S_SYS_STRING: IPHONE_5S_NAMESTRING,IPHONE_5C_SYS_STRING: IPHONE_5C_NAMESTRING,IPOD_1G_SYS_STRING: IPOD_1G_NAMESTRING,IPOD_2G_SYS_STRING: IPOD_2G_NAMESTRING,IPOD_3G_SYS_STRING: IPOD_3G_NAMESTRING,IPOD_4G_SYS_STRING: IPOD_4G_NAMESTRING,IPOD_5G_SYS_STRING: IPOD_5G_NAMESTRING,IPAD_1_SYS_STRING: IPAD_1G_NAMESTRING,IPAD_2_WIFI_SYS_STRING: IPAD_2G_NAMESTRING,IPAD_2_GSM_SYS_STRING: IPAD_2G_NAMESTRING,IPAD_2_CDMA_SYS_STRING: IPAD_2G_NAMESTRING,IPAD_2_WIFI2_SYS_STRING: IPAD_2G_NAMESTRING,IPAD_MINI_WIFI_SYS_STRING: IPAD_1G_MINI_NAMESTRING,IPAD_MINI_GSM_SYS_STRING: IPAD_1G_MINI_NAMESTRING,IPAD_MINI_CDMA_SYS_STRING: IPAD_1G_MINI_NAMESTRING,IPAD_3_WIFI_SYS_STRING: IPAD_3G_NAMESTRING,IPAD_3_CDMA_SYS_STRING: IPAD_3G_NAMESTRING,IPAD_3_GSM_SYS_STRING: IPAD_3G_NAMESTRING,IPAD_4_WIFI_SYS_STRING: IPAD_4G_NAMESTRING,IPAD_4_GSM_SYS_STRING: IPAD_4G_NAMESTRING,IPAD_4_CDMA_SYS_STRING: IPAD_4G_NAMESTRING};
+// Rather than a huge if block or switch statement, This uses a dictionary with all the possible values. It doesn't look pretty, but it's a lot simpler to look at in the code and it should be faster than other options. Also this means the actual code should never need to change. Instead, simply updating the DEVICE_STRINGS_DICTIONARY should add a device. Comments were added in for easier navigation and future additions.
 
-/*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- More organized view of the info above. Please add to both
- 
-STRINGS_DICTIONARY @{
- IFPGA_SYS_STRING: IFPGA_NAMESTRING,				IPHONE_1_SYS_STRING: IPHONE_1G_NAMESTRING,
- IPHONE_3G_SYS_STRING: IPHONE_3G_NAMESTRING,		IPHONE_3GS_SYS_STRING: IPHONE_3GS_NAMESTRING,
- IPHONE_4GSM_SYS_STRING: IPHONE_4_NAMESTRING,		IPHONE_4CDMA_SYS_STRING: IPHONE_4_NAMESTRING,
- IPHONE_4S_SYS_STRING: IPHONE_4S_NAMESTRING,		IPHONE_5GSM_SYS_STRING: IPHONE_5_NAMESTRING,
- IPHONE_5CDMA_SYS_STRING: IPHONE_5_NAMESTRING,		IPHONE_5S_SYS_STRING: IPHONE_5S_NAMESTRING,
- IPHONE_5C_SYS_STRING: IPHONE_5C_NAMESTRING,		IPOD_1G_SYS_STRING: IPOD_1G_NAMESTRING,
- IPOD_2G_SYS_STRING: IPOD_2G_NAMESTRING,			IPOD_3G_SYS_STRING: IPOD_3G_NAMESTRING,
- IPOD_4G_SYS_STRING: IPOD_4G_NAMESTRING,			IPOD_5G_SYS_STRING: IPOD_5G_NAMESTRING,
- IPAD_1_SYS_STRING: IPAD_1G_NAMESTRING,				IPAD_2_WIFI_SYS_STRING: IPAD_2G_NAMESTRING,
- IPAD_2_GSM_SYS_STRING: IPAD_2G_NAMESTRING,			IPAD_2_CDMA_SYS_STRING: IPAD_2G_NAMESTRING,
- IPAD_2_WIFI2_SYS_STRING: IPAD_2G_NAMESTRING,		IPAD_MINI_WIFI_SYS_STRING: IPAD_1G_MINI_NAMESTRING,
- IPAD_MINI_GSM_SYS_STRING: IPAD_1G_MINI_NAMESTRING,	IPAD_MINI_CDMA_SYS_STRING: IPAD_1G_MINI_NAMESTRING,
- IPAD_3_WIFI_SYS_STRING: IPAD_3G_NAMESTRING,		IPAD_3_CDMA_SYS_STRING: IPAD_3G_NAMESTRING,
- IPAD_3_GSM_SYS_STRING: IPAD_3G_NAMESTRING,			IPAD_4_WIFI_SYS_STRING: IPAD_4G_NAMESTRING,
- IPAD_4_GSM_SYS_STRING: IPAD_4G_NAMESTRING,			IPAD_4_CDMA_SYS_STRING: IPAD_4G_NAMESTRING};
- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- */
+#define DEVICE_STRINGS_DICTIONARY @{/*
+	**iPhones-->***/ IFPGA_SYS_STRING: IFPGA_NAMESTRING,/***/IPHONE_1_SYS_STRING: IPHONE_1G_NAMESTRING,/***/IPHONE_3G_SYS_STRING: IPHONE_3G_NAMESTRING,/***/IPHONE_3GS_SYS_STRING: IPHONE_3GS_NAMESTRING,/*
+	**iPhone 4-->***/IPHONE_4GSM_SYS_STRING: IPHONE_4_NAMESTRING,/***/IPHONE_4CDMA_SYS_STRING: IPHONE_4_NAMESTRING,/*
+	**iPhone 4S-->***/ IPHONE_4S_SYS_STRING: IPHONE_4S_NAMESTRING,/*
+	**iPhone 5-->***/IPHONE_5GSM_SYS_STRING: IPHONE_5_NAMESTRING,/***/IPHONE_5CDMA_SYS_STRING: IPHONE_5_NAMESTRING,/*
+	**iPhone 5C-->***/IPHONE_5C_USTEC_SYS_STRING: IPHONE_5C_NAMESTRING, /***/IPHONE_5C_FRNTEC_SYS_STRING: IPHONE_5C_NAMESTRING, /*
+	**iPhone 5S-->***/ IPHONE_5S_USTEC_SYS_STRING: IPHONE_5S_NAMESTRING,/***/IPHONE_5S_FRNTEC_SYS_STRING: IPHONE_5S_NAMESTRING, /*
+	
+	**iPods-->***/IPOD_1G_SYS_STRING: IPOD_1G_NAMESTRING,/***/IPOD_2G_SYS_STRING: IPOD_2G_NAMESTRING,/***/IPOD_3G_SYS_STRING: IPOD_3G_NAMESTRING,/***/IPOD_4G_SYS_STRING: IPOD_4G_NAMESTRING,/*
+	**iPod5-->***/IPOD_5G_SYS_STRING: IPOD_5G_NAMESTRING,/*
+
+	**iPads-->***/IPAD_1_SYS_STRING: IPAD_1G_NAMESTRING,/*
+	**iPad2-->***/IPAD_2_WIFI_SYS_STRING: IPAD_2G_NAMESTRING,/***/IPAD_2_GSM_SYS_STRING: IPAD_2G_NAMESTRING,/***/IPAD_2_CDMA_SYS_STRING: IPAD_2G_NAMESTRING,/***/IPAD_2_WIFI2_SYS_STRING: IPAD_2G_NAMESTRING,/*
+	**iPadMini-->***/IPAD_MINI_WIFI_SYS_STRING: IPAD_1G_MINI_NAMESTRING,/***/IPAD_MINI_GSM_SYS_STRING: IPAD_1G_MINI_NAMESTRING,/***/IPAD_MINI_CDMA_SYS_STRING: IPAD_1G_MINI_NAMESTRING,/*
+	**iPad3-->***/IPAD_3_WIFI_SYS_STRING: IPAD_3G_NAMESTRING,/***/IPAD_3_CDMA_SYS_STRING: IPAD_3G_NAMESTRING,/***/IPAD_3_GSM_SYS_STRING: IPAD_3G_NAMESTRING,/*
+	**iPad4-->***/IPAD_4_WIFI_SYS_STRING: IPAD_4G_NAMESTRING,/***/IPAD_4_GSM_SYS_STRING: IPAD_4G_NAMESTRING,/***/IPAD_4_CDMA_SYS_STRING: IPAD_4G_NAMESTRING};
+
 @implementation UIDevice (Hardware)
 
 #pragma mark platform type and name utils
 
 /********************************************************
  Returns a string with the device name and if it's a retina device," Retina" will be added to the string.
- e.g. @"iPhone 5 Retina"
+ e.g. @"iPhone 5" or @"iPhone 5 Retina"
  *********************************************************/
 + (NSString *) platformString
 {
 	NSString *hwString = [self getSysInfoByName:"hw.machine"];
 	NSString *platform;
 	
-	NSDictionary *newDictionary = STRINGS_DICTIONARY;
+	NSDictionary *newDictionary = DEVICE_STRINGS_DICTIONARY;
 	platform = [newDictionary objectForKey:hwString];
 	
 	if(!platform){
@@ -153,9 +148,7 @@ STRINGS_DICTIONARY @{
 		else if ([hwString hasPrefix:IPOD_PREFIX_SYS_STRING])	platform = IPOD_UNKNOWN_NAMESTRING;
 		else if ([hwString hasPrefix:IPAD_PREFIX_SYS_STRING])	platform = IPAD_UNKNOWN_NAMESTRING;
 		
-		
-		
-		// Apple TV
+	// Apple TV ***I may drop this in the future, I'm not sure whether it's really necessary, that's why it's not in the DEVICE_STRINGS_DICTIONARY***
 		else if ([hwString hasPrefix:@"AppleTV"]){
 			if ([hwString hasPrefix:@"AppleTV2"])           platform = APPLETV_2G_NAMESTRING;
 			else if ([hwString hasPrefix:@"AppleTV3"])      platform = APPLETV_3G_NAMESTRING;
@@ -170,8 +163,6 @@ STRINGS_DICTIONARY @{
 		else platform = IOS_FAMILY_UNKNOWN_DEVICE;
 	}
 	
-	
-	
 	if(([UIScreen mainScreen].scale == 2.0f)){
 		platform = [NSString stringWithFormat:@"%@ Retina", platform];
 	}
@@ -179,7 +170,7 @@ STRINGS_DICTIONARY @{
 	return platform;
 }
 
-// returns true if it's an Phone
+// returns true if it's uses the phone idiom
 + (BOOL) isPhoneIdiom
 {
 	return ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)? YES : NO;
@@ -267,56 +258,5 @@ STRINGS_DICTIONARY @{
     NSDictionary *fattributes = [[NSFileManager defaultManager] attributesOfFileSystemForPath:NSHomeDirectory() error:nil];
     return fattributes[NSFileSystemFreeSize];
 }
-
-#pragma mark MAC addy
-// Return the local MAC addy
-// Courtesy of FreeBSD hackers email list
-// Accidentally munged during previous update. Fixed thanks to mlamb.
-+ (NSString *) macaddress
-{
-    int                 mib[6];
-    size_t              len;
-    char                *buf;
-    unsigned char       *ptr;
-    struct if_msghdr    *ifm;
-    struct sockaddr_dl  *sdl;
-    
-    mib[0] = CTL_NET;
-    mib[1] = AF_ROUTE;
-    mib[2] = 0;
-    mib[3] = AF_LINK;
-    mib[4] = NET_RT_IFLIST;
-    
-    if ((mib[5] = if_nametoindex("en0")) == 0) {
-        printf("Error: if_nametoindex error\n");
-        return NULL;
-    }
-    
-    if (sysctl(mib, 6, NULL, &len, NULL, 0) < 0) {
-        printf("Error: sysctl, take 1\n");
-        return NULL;
-    }
-    
-    if ((buf = malloc(len)) == NULL) {
-        printf("Could not allocate memory. error!\n");
-        return NULL;
-    }
-    
-    if (sysctl(mib, 6, buf, &len, NULL, 0) < 0) {
-        printf("Error: sysctl, take 2");
-        free(buf);
-        return NULL;
-    }
-    
-    ifm = (struct if_msghdr *)buf;
-    sdl = (struct sockaddr_dl *)(ifm + 1);
-    ptr = (unsigned char *)LLADDR(sdl);
-    NSString *outstring = [NSString stringWithFormat:@"%02X:%02X:%02X:%02X:%02X:%02X", 
-                           *ptr, *(ptr+1), *(ptr+2), *(ptr+3), *(ptr+4), *(ptr+5)];
-    free(buf);
-
-    return outstring;
-}
-
 
 @end

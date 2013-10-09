@@ -5,7 +5,7 @@
  */
 
 /********************************************************
- Drastic changes made by PeeJWeeJ, but thanks to all the contributors
+ Drastic changes made by Paul Fechner Jr.  Thanks to all the other contributors
  *********************************************************/
 
 #import <UIKit/UIKit.h>
@@ -21,7 +21,7 @@
 /// Evaluates as true if the device uses the phone idiom, for distinguishing between iPhone and iPad idioms. If you want to distinguish between iPhone and iPod, please use [UIDevice isIPod]
 + (BOOL) isPhoneIdiom;
 
-/// Evaluates as true only if the device is an iPOD. Use to distinguish between an iPhone and iPod. if you want to distinguish betwen iPad and iPhone interface idioms, use [UIDevice isPhoneIdiom
+/// Evaluates as true only if the device is an iPOD. Use to distinguish between an iPhone and iPod. if you want to distinguish betwen iPad and iPhone interface idioms, use [UIDevice isPhoneIdiom]
 + (BOOL) isIPod;
 
 + (NSUInteger) cpuFrequency;
@@ -31,7 +31,5 @@
 
 + (NSNumber *) totalDiskSpace;
 + (NSNumber *) freeDiskSpace;
-
-+ (NSString *) macaddress;
 
 @end
