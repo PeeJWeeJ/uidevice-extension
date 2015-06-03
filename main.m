@@ -45,8 +45,8 @@
 
 - (NSString *) commasForNumber: (long long) num
 {
-	if (num < 1000) return [NSString stringWithFormat:@"%d", num];
-	return	[[self commasForNumber:num/1000] stringByAppendingFormat:@",%03d", (num % 1000)];
+	if (num < 1000) return [NSString stringWithFormat:@"%lld", num];
+	return	[[self commasForNumber:num/1000] stringByAppendingFormat:@",%03lld", (num % 1000)];
 }
 
 - (void) action: (UIBarButtonItem *) bbi
@@ -75,7 +75,7 @@
 	
 	// TESTING DEVICE HARDWARE
 	[self doLog:@"Platform: %@", [[UIDevice currentDevice] platform]];
-	[self doLog:@"Platform String: %@", [[UIDevice currentDevice] platformString]];
+	[self doLog:@"Platform String: %@", [UIDevice platformString]];
     [self doLog:@"Mac: %@", [[UIDevice currentDevice] macaddress]];
 
 	/*
@@ -93,7 +93,7 @@
 {
 	self.navigationController.navigationBar.tintColor = COOKBOOK_PURPLE_COLOR;
 	self.navigationItem.rightBarButtonItem = BARBUTTON(@"Action", @selector(action:));
-	if ([[[UIDevice currentDevice] platformString] hasPrefix:@"iPad"])
+	if ([[UIDevice platformString] hasPrefix:@"iPad"])
 	{
 		UIImageView *imgView = (UIImageView *)[self.view viewWithTag:999];
 		imgView.frame = [[UIScreen mainScreen] applicationFrame];
